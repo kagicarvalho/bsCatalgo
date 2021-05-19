@@ -1,6 +1,7 @@
 package com.bearsystems.bsCatalog.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bearsystems.bsCatalog.dto.CategoryDTO;
 import com.bearsystems.bsCatalog.entities.Category;
 import com.bearsystems.bsCatalog.repositories.CategoryRepository;
+import com.bearsystems.bsCatalog.services.exceptions.EntityNotFoundException;
 
 @Service
 public class CategoryService {
@@ -29,5 +31,15 @@ public class CategoryService {
 		//}
 		//return listDto;		
 	}
+	
+	@Transactional(readOnly = true)
+	public CategoryDTO findById(Long id) {
+		Optional<Category> obj = repository.findById(id);
+		
+		Category entity = obj.orElseThrow(() -> new EntityNotFoundException("Registro não encontrado"));
+		
+		return new CategoryDTO(entity);
+	}
+
 
 }
